@@ -1,0 +1,86 @@
+
+create table tblEmployee
+(
+emp_id int primary key,
+emp_name varchar(30) not null,
+dept_id int not null,
+manager_id int not null,
+salary int not null);
+
+create table Dept
+(
+dept_id int primary key,
+dept_name varchar(30) not null);
+
+insert into tblEmployee values
+(1, 'Sumit', 1, 3, 2999),
+(2, 'Reshma', 1, 3, 3999),
+(3, 'Farhana', 2, 5, 1000),
+(4, 'Robin', 1, 5, 2000),
+(5, 'Robin', 2, 0, 3000),
+(6, 'Robin', 1, 2, 2000);
+
+insert into Dept values
+(1, 'IT'),
+(2, 'Admin');
+
+
+-- get All the duplicate records
+--    select 
+      -- emp_name, salary, count(*) 
+      -- from tblEmployee 
+      -- group by emp_name, salary 
+      -- having count(*)>1;
+
+-- get The list of employees managers
+-- select
+--     e.emp_id, e.emp_name, m.emp_name as manager_name
+--     from tblEmployee e
+--     LEFT JOIN tblEmployee m
+--     on e.manager_id = m.emp_id;    
+
+-- get nth highest Salary
+-- select emp_id, emp_name, salary 
+--       from tblEmployee 
+--       order by salary desc limit 1,1;
+
+-- rank By salary alternative using window function
+-- with ranking as(
+-- select
+--       emp_id, emp_name, salary,
+--       DENSE_RANK() 
+--       OVER(ORDER BY salary desc) rank_by_salary
+--       from tblEmployee
+-- )
+-- select emp_id, emp_name, salary 
+--       from ranking 
+--       where rank_by_salary=4 LIMIT 1;
+
+-- get nth Highest Salary separated by departments using DENSE_RANK() window function
+-- with deptSep as(
+--   select emp_id, emp_name, salary, dept_id,
+--       DENSE_RANK() OVER (PARTITION BY dept_id 
+--       ORDER BY salary desc) dept_separated_rank
+--       from tblEmployee
+-- )
+-- select emp_id, emp_name, salary, dept_id 
+--       from deptSep
+--       where dept_separated_rank=2;
+
+
+-- UNION ALL will show both the records and will not exclude the common records as the regular UNION
+-- select dept_name 
+--       from Dept d
+--       where d.dept_name="IT"
+--       union all
+-- select dept_name 
+--       from Dept d
+--       where d.dept_name="IT";
+
+-- get The department who have less than 3 Employees
+-- select e.dept_id, d.dept_name
+--       from tblEmployee e
+--       join Dept d 
+--       on e.dept_id = d.dept_id
+--       GROUP BY e.dept_id, d.dept_name 
+--       HAVING COUNT(e.emp_id) < 3;
